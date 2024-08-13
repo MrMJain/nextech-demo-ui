@@ -1,0 +1,35 @@
+<div class="page-container">
+<h2>Nextech - Demo</h2>
+    <mat-form-field>
+      <mat-label>Search News</mat-label>
+      <input matInput [(ngModel)]="filterValue" placeholder="Search" (keyup)="applyFilter($event)">
+      <mat-icon matSuffix (click)="ClearSearch()">close</mat-icon>
+    </mat-form-field>
+ 
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element.id}}          
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="title">
+    <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+    <mat-cell *matCellDef="let element">    
+      <a target="_blank" href={{element.url}}>{{element.title}}</a>.      
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+</table>
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+<mat-paginator
+  #paginator
+  [length]="totalData"
+  [pageSizeOptions]="pageSizes"
+  showFirstLastButtons
+></mat-paginator>
+</div>
