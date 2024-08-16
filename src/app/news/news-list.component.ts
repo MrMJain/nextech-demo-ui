@@ -1,4 +1,4 @@
- import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { News, NewsResponse } from '../model/news';
 import { MatPaginator } from '@angular/material/paginator';
@@ -45,7 +45,7 @@ export class NewsListComponent  implements OnInit {
     return this._newsService.getNews(this.pageInfo)
   }
   applyFilter(event: Event) {
-    this.filterValue =  (event.target as HTMLInputElement).value.trim(); // Remove whitespace
+    this.filterValue =  (event.target as HTMLInputElement).value.trim(); // Remove whitespace 
     if(this.filterValue.length > 3)
     {
       this.filterValue = this.filterValue.toLowerCase(); // Datasource defaults to lowercase matches
@@ -82,13 +82,13 @@ export class NewsListComponent  implements OnInit {
     this.paginator.page
       .pipe(
         startWith({}),
-        switchMap(() => {
+        switchMap((r : any) => {
           this.isLoading = true;
-          return this.onLoad(
-          ).pipe(catchError(() => observableOf(null)));
+          return this.onLoad()
+          .pipe(catchError(() => observableOf(null)));
         }),
         map((newsData) => {
-          if (newsData == null) return [];
+          if (newsData == null && newsData == undefined) return [];
           this.totalData = newsData.pageInfo.totalCount;
           this.isLoading = false;
           return newsData.results;
