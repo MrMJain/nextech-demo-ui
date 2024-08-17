@@ -44,7 +44,7 @@ describe('NewsListComponent', () => {
         MatFormFieldModule,MatPaginatorModule,MatButtonModule,MatProgressBarModule, MatInputModule,MatProgressSpinnerModule,MatFormField,MatTableModule
       ],
      declarations: [NewsListComponent],
-      providers:[HttpClient,NewsService,   { 
+      providers:[HttpClient,{provide: NewsService, useValue: { getNews: () => of(''), instant: () => of('') }},   { 
           provide: MatPaginator, 
           useValue: { 
             page: pageEmitter,
@@ -87,25 +87,52 @@ describe('NewsListComponent', () => {
       
   });
   it('should call getNews$ and update dataSource on ngAfterViewInit', () => {
-      
+    const mockNewsResponse1: NewsResponse = {
+      results: [
+        { id: 1, title: 'Test News 1' },
+        { id: 2, title: 'Test News 2' },
+      ],
+      pageInfo: {
+        totalCount: 2,
+        pageSize: 1,
+        totalPages: 0,
+        isFullDataRequired: false
+      },
+      isSuccess: false,
+      message: ''
+    };
     let pageInfo: pageparam = new pageparam();
     pageInfo.pageNumber = 1;
     pageInfo.pageSize = 5;
     pageInfo.search ='';
     pageInfo.isFullDataRequired = false;
-    
-    spyOn(service,"getNews").and.callFake(() => {
-      return of(mockNewsResponse);
-    });
+    spyOn(service, 'getNews').and.returnValue(of(mockNewsResponse));
+    // spyOn(service,"getNews").and.callFake(() => {
+    //   return of(mockNewsResponse);
+    // });
     fixture.componentInstance.ngAfterViewInit(); // triggers ngAfterViewInit
     fixture.detectChanges();
 
     expect(service.getNews).toHaveBeenCalledWith(pageInfo);
     expect(app.News.length).toBe(2);
-    expect(app.isLoading).toBeFalse();
+    expect(app.isLoading).toBeFalse(); 
   });
   
   it('should apply filter and load data if filter length > 3', () => {
+    const mockNewsResponse2: NewsResponse = {
+      results: [
+        { id: 1, title: 'Test News 1' },
+        { id: 2, title: 'Test News 2' },
+      ],
+      pageInfo: {
+        totalCount: 2,
+        pageSize: 1,
+        totalPages: 0,
+        isFullDataRequired: false
+      },
+      isSuccess: false,
+      message: ''
+    };
     // Arrange
     const event = { target: { value: 'Test' } };
           let pageInfo: pageparam = new pageparam();
@@ -121,7 +148,7 @@ describe('NewsListComponent', () => {
     length: 20,
   });
     spyOn(service,"getNews").and.callFake(() => {
-            return of(mockNewsResponse);
+            return of(mockNewsResponse2);
           });
          
     app.applyFilter(event);
@@ -130,9 +157,5 @@ describe('NewsListComponent', () => {
     expect(service.getNews).toHaveBeenCalledWith(pageInfo);
     expect(app.News.length).toEqual(2);
     expect(service.getNews).toHaveBeenCalled();
-  });
-  afterAll(() => {
-    // Cleanup code
-    fixture.destroy();
   });
 });

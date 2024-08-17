@@ -49,26 +49,7 @@ export class NewsListComponent  implements OnInit {
     if(this.filterValue.length > 3)
     {
       this.filterValue = this.filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-      this.dataSource.paginator = this.paginator;
-      this.paginator.page
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoading = true;
-          return this.onLoad(
-          ).pipe(catchError(() => observableOf(null)));
-        }),
-        map((newsData) => {
-          if (newsData == null) return [];
-          this.totalData = newsData.pageInfo.totalCount;
-          this.isLoading = false;
-          return newsData.results;
-        })
-      )
-      .subscribe((newsData) => {
-        this.News = newsData;
-        this.dataSource = new MatTableDataSource(this.News);
-      });
+      this.loadNewsList();
     }
     else if(this.filterValue.length ==0){
       this.Clear();
@@ -78,40 +59,24 @@ export class NewsListComponent  implements OnInit {
     this.Clear();
 }
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.paginator.page
-      .pipe(
-        startWith({}),
-        switchMap((r : any) => {
-          this.isLoading = true;
-          return this.onLoad()
-          .pipe(catchError(() => observableOf(null)));
-        }),
-        map((newsData) => {
-          if (newsData == null && newsData == undefined) return [];
-          this.totalData = newsData.pageInfo.totalCount;
-          this.isLoading = false;
-          return newsData.results;
-        })
-      )
-      .subscribe((newsData) => {
-        this.News = newsData;
-        this.dataSource = new MatTableDataSource(this.News);
-      });
+    this.loadNewsList()
   }     
   Clear(){
     this.filterValue = ""; // Datasource defaults to lowercase matches
-    this.dataSource.paginator = this.paginator;
+    this.loadNewsList();
+  }
+  
+  loadNewsList = (): void => {
     this.paginator.page
     .pipe(
       startWith({}),
-      switchMap(() => {
+      switchMap((r : any) => {
         this.isLoading = true;
-        return this.onLoad(
-        ).pipe(catchError(() => observableOf(null)));
+        return this.onLoad()
+        .pipe(catchError(() => observableOf(null)));
       }),
       map((newsData) => {
-        if (newsData == null) return [];
+        if (newsData == null && newsData == undefined) return [];
         this.totalData = newsData.pageInfo.totalCount;
         this.isLoading = false;
         return newsData.results;
@@ -121,5 +86,5 @@ export class NewsListComponent  implements OnInit {
       this.News = newsData;
       this.dataSource = new MatTableDataSource(this.News);
     });
-  }                                                        
+  };
 }
