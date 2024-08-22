@@ -6,7 +6,7 @@
       <mat-icon matSuffix (click)="ClearSearch()">close</mat-icon>
     </mat-form-field>
  
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<table *ngIf="News" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
     <mat-cell *matCellDef="let element">

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { News, NewsResponse } from '../model/news';
 import { MatPaginator } from '@angular/material/paginator';
@@ -28,7 +28,7 @@ export class NewsListComponent  implements OnInit {
   totalData: number;
   filterValue: string = "";
   News: News[];
-  constructor(private _newsService: NewsService) {}
+  constructor(private _newsService: NewsService,private cdr: ChangeDetectorRef) {}
 
   @ViewChild('paginator') paginator: MatPaginator;
   @ViewChild('paginatorPageSize')                                                                     
@@ -60,6 +60,7 @@ export class NewsListComponent  implements OnInit {
 }
   ngAfterViewInit() {
     this.loadNewsList()
+    this.cdr.detectChanges();
   }     
   Clear(){
     this.filterValue = ""; // Datasource defaults to lowercase matches
